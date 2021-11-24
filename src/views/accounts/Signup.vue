@@ -1,8 +1,9 @@
 <template>
   <div>
     <!-- 배경 이미지 -->
-    <img class="background-image" :src="require(`@/assets/main_img/${main_img_num}.jpg`)">
+    <div class="background-image" :style="{ backgroundImage: 'url(' + main_path + ')' }">
       <div class="transparent-black"></div>
+    </div>
     <!-- 회원가입 박스 -->
     <div class="container">
       <b-card class="main" 
@@ -59,7 +60,6 @@ export default {
       error: null,
       SERVER_URL: process.env.VUE_APP_SERVER_URL,
       invalid_names: ['login', 'signup', 'admin', 'id', 'password', ''],
-      main_img_num: 0,
     }
   },
   methods: {
@@ -119,9 +119,9 @@ export default {
     this.main_img_num = _.random(2)
   },
   computed: {
-    // main_path: function() {
-    //   return(`${this.SERVER_URL}/static/images/${this.main_img_num}.jpg`)
-    // },
+    main_path: function() {
+      return(`${this.SERVER_URL}/static/images/${this.main_img_num}.jpg`)
+    },
   },
 }
 </script>

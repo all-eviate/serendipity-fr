@@ -13,41 +13,71 @@
       :article="article"
       >
     </article-list-item>
+    <infinite-loading spinner="spiral" @infinite="infiniteHandler">
+      <div slot="no-more">끝! :)</div>
+      <div slot="no-results">No results :(</div>
+    </infinite-loading>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import ArticleListItem from '@/components/community/ArticleListItem.vue'
+import InfiniteLoading from 'vue-infinite-loading'
 // import { mapState } from 'vuex'
 
 export default {
   name: 'Community',
   data: function() {
     return {
+      page: 1,
       articleList: [],
     }
   },
   components: {
-    ArticleListItem
+    ArticleListItem,
+    InfiniteLoading,
   },
   methods: {
+    infiniteHandler: function ($state) {
+      const SERVER_URL = process.env.VUE_APP_SERVER_URL
+      axios({
+        method: 'get',
+        url: `${SERVER_URL}/community?page=${this.page}`,
+        headers: this.$store.state.userStore.authorized_token,
+      })
+        .then(({data}) => {
+          if (data.length) {
+            this.page += 1
+            this.articleList.push(...data)
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+        .catch(({response}) => {
+          if (response.stats === 404) {
+            $state.error()
+          }
+          console.log(response)
+        })
+    }
   },
-  created: function() {
-    const SERVER_URL = process.env.VUE_APP_SERVER_URL
-    axios({
-      method: 'get',
-      url: `${SERVER_URL}/community/`,
-      headers: this.$store.state.userStore.authorized_token,
-    })
-      .then(res => {
-        this.articleList = res.data
-      })
-      .catch(err => {
-        console.log('에러!')
-        console.log(err)
-      })
-  }
+//   created: function() {
+//     const SERVER_URL = process.env.VUE_APP_SERVER_URL
+//     axios({
+//       method: 'get',
+//       url: `${SERVER_URL}/community/`,
+//       headers: this.$store.state.userStore.authorized_token,
+//     })
+//       .then(res => {
+//         this.articleList = res.data
+//       })
+//       .catch(err => {
+//         console.log('에러!')
+//         console.log(err)
+//       })
+//   }
 }
 </script>
 

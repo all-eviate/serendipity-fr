@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
+import VueParticles from 'vue-particles'
+import VAnimateCss from 'v-animate-css'
 
 import 'swiper/css/swiper.css'
 
@@ -20,6 +22,8 @@ Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 Vue.use(SequentialEntrance)
+Vue.use(VueParticles)
+Vue.use(VAnimateCss)
 
 Vue.config.productionTip = false
 

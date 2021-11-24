@@ -1,8 +1,9 @@
 <template>
   <div>
     <!-- 배경 이미지 -->
-    <img class="background-image" :src="require(`@/assets/main_img/${main_img_num}.jpg`)">
+    <div class="background-image" :style="{ backgroundImage: 'url(' + main_path + ')' }">
       <div class="transparent-black"></div>
+    </div>
     <!-- 로그인 박스 -->
     <div class="container">
       <b-card class="main" 
@@ -48,7 +49,6 @@ export default {
         password: null,
       },
       error: null,
-      main_img_num: 0,
     }
   },
   methods: {
@@ -63,7 +63,16 @@ export default {
           localStorage.setItem('jwt', res.data.token)
           // vuex의 login 액션 -> LOGIN 변이 -> state의 isLogin 변경
           this.$store.dispatch('userStore/login')
-          this.$router.go(-1)
+          console.log(this.$router.history)
+          if (this.$router.history.current.fullPath === '/accounts/login' && this.$router.history._startLocation === '/accounts/signup') {
+            this.$router.push({ name: 'Home'})
+          } 
+          else if (this.$router.history.current.fullPath === '/accounts/login' && this.$router.history._startLocation === '/') {
+            this.$router.push({ name: 'Home'})
+          }
+          else {
+            this.$router.go(-1)
+          }
         })
         .catch(err => {
           console.log(err)
@@ -78,7 +87,7 @@ export default {
           }
           catch {
             if (error_message['non_field_errors'][0] === 'Unable to log in with provided credentials.') {
-              error_message = '사용자 이름 또는 비밀번호가 다릅니다.'
+              error_message = '존재하지 않는 사용자이거나, 사용자 이름 또는 비밀번호가 다릅니다.'
             }
           }
           this.error = error_message
@@ -89,10 +98,10 @@ export default {
     this.main_img_num = _.random(2)
   },
   computed: {
-    // main_path: function() {
-    //   const SERVER_URL = process.env.VUE_APP_SERVER_URL
-    //   return(`${SERVER_URL}/static/images/${this.main_img_num}.jpg`)
-    // },
+    main_path: function() {
+      const SERVER_URL = process.env.VUE_APP_SERVER_URL
+      return(`${SERVER_URL}/static/images/${this.main_img_num}.jpg`)
+    },
   },
 }
 </script>

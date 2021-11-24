@@ -95,7 +95,7 @@
 
           <b-col cols="12" sm>
             <h4>좋아하는 영화</h4>
-            <router-link :to="{ name: 'UserLikedMovieList', params: { username: username, type: 'like' }}" class="color-snow text-decoration-none">
+            <router-link :to="{ name: 'UserLikedMovieList', params: { username: profile_username, type: 'like' }}" class="color-snow text-decoration-none">
               <h4>
                 {{ liked_movies_count }}
               </h4>
@@ -103,7 +103,7 @@
           </b-col>
           <b-col cols="12" sm>
             <h4>보고싶은 영화</h4>
-            <router-link :to="{ name: 'UserWishedMovieList', params: { username: username, type: 'wish' }}" class="color-snow text-decoration-none">
+            <router-link :to="{ name: 'UserWishedMovieList', params: { username: profile_username, type: 'wish' }}" class="color-snow text-decoration-none">
               <h4>
                 {{ wished_movies_count }}
               </h4>
@@ -114,7 +114,7 @@
 
           <b-col cols="12" sm>
             <h4>작성한 영화 리뷰</h4>
-            <router-link :to="{ name: 'UserWroteReviewList', params: { username: username, type: 'wrote_reviews' }}" class="color-snow text-decoration-none">
+            <router-link :to="{ name: 'UserWroteReviewList', params: { username: profile_username, type: 'wrote_reviews' }}" class="color-snow text-decoration-none">
               <h4>
                 {{ review_count }}
               </h4>
@@ -122,7 +122,7 @@
           </b-col>
           <b-col cols="12" sm>
             <h4>좋아하는 영화 리뷰</h4>
-            <router-link :to="{ name: 'UserLikedReviewList', params: { username: username, type: 'liked_reviews' }}" class="color-snow text-decoration-none">
+            <router-link :to="{ name: 'UserLikedReviewList', params: { username: profile_username, type: 'liked_reviews' }}" class="color-snow text-decoration-none">
               <h4>
                 {{ liked_reviews_count }}
               </h4>
@@ -137,7 +137,7 @@
           <div class="pb-5">
             <div class="d-flex justify-content-center">
               <h2 class="pe-2 mb-0 align-middle">작성한 게시글</h2>
-              <router-link :to="{ name: 'UserWroteArticleList', params: { username: username, type: 'wrote_articles'}}" class="color-snow text-decoration-none">
+              <router-link :to="{ name: 'UserWroteArticleList', params: { username: profile_username, type: 'wrote_articles'}}" class="color-snow text-decoration-none">
                 <b-button variant="dark" size="sm">더보기</b-button>
               </router-link>
             </div>
@@ -159,7 +159,7 @@
           <div class="pb-5">
             <div class="d-flex justify-content-center">
               <h2 class="pe-2 mb-0 align-middle">좋아요한 게시글</h2>
-              <router-link :to="{ name: 'UserLikedArticleList', params: { username: username, type: 'liked_articles'}}" class="color-snow text-decoration-none">
+              <router-link :to="{ name: 'UserLikedArticleList', params: { username: profile_username, type: 'liked_articles'}}" class="color-snow text-decoration-none">
                 <b-button variant="dark" size="sm">더보기</b-button>
               </router-link>
             </div>
@@ -323,9 +323,11 @@ export default {
         headers: this.$store.state.userStore.authorized_token,
       })
         .then(res => {
+          this.is_followed = res.data.is_followed
           this.followers_count = res.data.followers_count
           this.followings_count = res.data.followings_count
-          this.is_followed = res.data.is_followed
+          this.followers_info = res.data.followers_info
+          this.followings_info = res.data.followings_info
         })
         .catch(err => {
           console.log(err)

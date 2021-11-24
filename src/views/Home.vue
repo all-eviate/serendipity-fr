@@ -1,7 +1,9 @@
 <template>
   <div>
-    <img class="background-image" :src="require(`@/assets/main_img/${main_img_num}.jpg`)">
-      <div style="width:100%; height:100%; background: linear-gradient(to bottom, transparent, 70%, #141414);"></div>
+    <div class="background-image"
+      :style="{ 'background-image': 'url('+`${main_img_str}`+ ')' }">
+      <div style="width:100%; height:100vh; position:absolute; background: linear-gradient(to bottom, transparent, 70%, #141414);"></div>
+    </div>
     <img alt="Vue logo" src="../assets/logo.png" style="margin-top:100px; max-width:500px; width: 90%">
     <the-search-bar
       :genreList="genreList"
@@ -13,7 +15,7 @@
     <movie-card-list
       :movieList="top20List"></movie-card-list>
     <div v-if="isLogin">
-      <div v-if="nolikesyet" style="height: 300px;">
+      <div v-if="nolikesyet" class="color-snow mt-5" style="height: 300px;">
         <h2>어떤 영화를 좋아하시나요?</h2>
       </div>
       <div v-else>
@@ -47,6 +49,8 @@ export default {
       personalList: [],
       nolikesyet: false,
       main_img_num: 0,
+      // main_img_str: `@/assets/main_img/${String(_.random(2))}.jpg`,
+      main_img_str: `${require('@/assets/main_img/'+String(_.random(2))+'.jpg')}`
     }
   },
   components: {
@@ -129,7 +133,6 @@ export default {
     }
   },
   created: function() {
-    this.main_img_num = _.random(2)
     this.setGenreTable()
     const SERVER_URL = process.env.VUE_APP_SERVER_URL
     axios({
@@ -141,8 +144,7 @@ export default {
       })
       .catch(err => {
         console.log('에러!')
-        console.log(SERVER_URL)
-        console.log(err.response)
+        console.log(err)
       })
     axios({
       method: 'get',
@@ -177,10 +179,6 @@ export default {
       })
   },
   computed: {
-    // main_path: function() {
-    //   const SERVER_URL = process.env.VUE_APP_SERVER_URL
-    //   return(`${SERVER_URL}/static/images/p${this.main_img_num}.jpg`)
-    // },
     ...mapState(userStore, [
       'isLogin',
     ]),
@@ -189,6 +187,17 @@ export default {
 </script>
 
 <style scoped>
+  .bg {
+    width: 100%;
+    height: 100vh;
+    z-index:-1;
+    filter: blur(4px);
+    position: absolute;
+    top: 0px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
   .background-image {
     position: absolute;
     top: 0;

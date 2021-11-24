@@ -42,6 +42,9 @@ export default {
         })
         .catch(err => {
           console.log(err.response)
+          if (err.response === 404) {
+            alert("설마 404?")
+          }
         })
     }
   }

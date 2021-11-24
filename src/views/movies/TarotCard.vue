@@ -1,14 +1,10 @@
 <template>
   <div class="color-snow">
-    <div>
-      <img alt="Profile Background" src="@/assets/profile_img/profile_background.jpg" class="background-image">
+    <div class="bg"
+      :style="{ 'background-image': 'url(' + `${backdrop_path}`  + ')' }">
     </div>
     <div>
-      <h1 style="margin-top:100px" class="mb-3">타로 카드를 뽑아보세용</h1>
-    </div>
-    <div class="mb-5">
-      <h5 class="pb-2">오늘의 운세</h5>
-      <p>{{ fortune }}</p>
+      <h1 id ="fontItalic" style="margin-top:100px" class="mb-5 color-snow">Are you feeling lucky?</h1>
     </div>
     <div class="d-flex flex-wrap">
       <sequential-entrance>
@@ -28,7 +24,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import TarotCardItem from '@/components/movies/TarotCardItem.vue'
 
 export default {
@@ -39,27 +34,13 @@ export default {
   data: function() {
     return {
       flipped: false,
-      fortune: '',
+      backdrop_path: `${require('@/assets/tarot_background.jpg')}`,
     }
   },
   methods: {
     flip: function() {
       this.flipped = !this.flipped
     }
-  },
-  created: function () {
-  const SERVER_URL = process.env.VUE_APP_SERVER_URL
-    axios({
-      method: 'get',
-      url: `${SERVER_URL}/movies/fortune`
-    })
-      .then((res) => {
-        // console.log(res)
-        this.fortune = res.data.translated_text
-      })
-      .catch(err => {
-        console.log(err)
-      })
   },
 }
 </script>
@@ -93,5 +74,23 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
+  }
+  .bg {
+    width: 100%;
+    height: 100vh;
+    z-index:-1;
+    filter: blur(4px);
+    position: absolute;
+    top: 0px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  #fontItalic {
+    font-family: Nanum Myeongjo, Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    font-style: italic;
   }
 </style>

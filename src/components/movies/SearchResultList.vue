@@ -6,7 +6,7 @@
       :movieItem="movieItem"
       :genreTable="genreTable"></search-result-list-item>
     <infinite-loading spinner="spiral" @infinite="infiniteHandler">
-      <div slot="no-more">끝! :) <br> <b-button @click="toTop">TO TOP</b-button></div>
+      <div slot="no-more" class="color-snow pb-3">끝! :) <br> <b-button @click="toTop" class="btn-color-sub my-4">TO TOP</b-button></div>
       <div slot="no-results">No results :(</div>
     </infinite-loading>
   </div>

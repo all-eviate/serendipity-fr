@@ -47,46 +47,24 @@
       <!-- 자신의 글만 수정, 삭제가 가능하다. -->
     </div>
     <hr>
-    <h3>댓글 작성</h3>
-    <div>
-      <p v-if=error>{{ error }}</p>
-      <div style="margin-top: 50px; margin-bottom: 30px;" class="mx-auto">
-        <div class="d-flex justify-content-center">
-          <b-form-textarea style="max-width:760px; width:100%; background-color:black; color:white;"
-            v-model="comment_content"
-            placeholder="내용을 입력하세요."
-            no-resize></b-form-textarea>
-          <b-button style="width:60px;" @click="createComment" variant="outline-light"><b-icon-pencil-square></b-icon-pencil-square></b-button>
-        </div>
-      </div>
-    </div>
-    <hr>
-    <article-comment-list-item
-      v-for="comment in list"
-      :key="comment.id"
-      :comment="comment"
-      @delete-article-comment="deleteComment(comment.id)"
-    ></article-comment-list-item>
-    <infinite-loading spinner="spiral" @infinite="infiniteHandler">
-      <div slot="no-more">끝! :) <br> <b-button variant="link" @click="toTop" class="text-decoration-none color-snow mb-5">TO TOP</b-button></div>
-      <div slot="no-results">No results :(</div>
-      <div slot="error">첫 리뷰를 남겨주세요!</div>
-    </infinite-loading>
+    <article-comment-list
+      :articlePk="String(this.$route.params.article_pk)"
+      @create-comment="createComment"
+      @delete-comment="deleteComment">
+    </article-comment-list>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import ArticleCommentListItem from '@/components/community/ArticleCommentListItem.vue'
-import InfiniteLoading from 'vue-infinite-loading'
 import { mapState } from 'vuex'
+import ArticleCommentList from '@/components/community/ArticleCommentList.vue'
 const userStore = 'userStore'
 
 export default {
   name: 'ArticleDetail',
-  components: { 
-    ArticleCommentListItem,
-    InfiniteLoading,
+  components: {
+    ArticleCommentList,
   },
   data: function () {
     return {
@@ -100,41 +78,43 @@ export default {
       liked: false,
       liked_users_count: '',
       profile_path: '',
-      comment_list : '',
       comment_count : '',
-      
+
       comment_content: '',
 
       list: [],
-      page: 1,
+      pageNum: 2,
+      EOP: false,
 
       error: null,
     }
   },
   methods: {
-    infiniteHandler($state) {
-      axios({
-        method: 'get',
-        url: `${this.SERVER_URL}/community/${this.$route.params.article_pk}/comments/?page=${this.page}`,
-        headers: this.$store.state.userStore.authorized_token,
-      })
-        .then(({data}) => {
-          if (data.length) {
-            this.page += 1
-            this.list.push(...data)
-            $state.loaded()
-          } else {
-            $state.complete()
-          }
+    getNextPage: function() {
+      const SERVER_URL = process.env.VUE_APP_SERVER_URL
+      if (!this.EOP) {
+        axios({
+          method: 'get',
+          url: `${SERVER_URL}/movies/${this.moviePk}/comments?page=${this.pageNum}`,
+          headers: this.$store.state.userStore.authorized_token,
         })
-        .catch(({response}) => {
-          if (response.status === 404) {
-            $state.error()
-          }
-        })
+          .then(res => {
+            console.log(res)
+            this.list = this.list.concat(res.data)
+            this.pageNum += 1
+            if (!res.data.hasNext) {
+              this.EOP = true
+            }
+          })
+          .catch(err => {
+            console.log(err.data)
+            if (err.response.status === 400) {
+              this.EOP = true
+            }
+          })
+      }
     },
     getArticle: function() {
-      // console.log(this.$store.state.userStore.authorized_token)
       axios({
         method: 'get',
         url: `${this.SERVER_URL}/community/${this.$route.params.article_pk}`,
@@ -149,7 +129,6 @@ export default {
           this.user = res.data.serializer.user,
           this.username = res.data.username,
           this.liked_users_count = res.data.serializer.liked_users.length,
-          this.comment_list = res.data.serializer.article_comment_set
           this.comment_count = res.data.serializer.article_comment_count
           if (this.liked_users_count > 0) {
             this.liked = res.data.serializer.liked_users.includes(this.userId)
@@ -168,6 +147,22 @@ export default {
         .catch(err => {
           console.log(err.response)
         })
+        axios({
+          method: 'get',
+          url: `${this.SERVER_URL}/community/${this.id}/comments/`,
+          headers: this.$store.state.userStore.authorized_token,
+        })
+          .then(res => {
+            console.log(res.data)
+            this.list = res.data
+          })
+          .catch(err => {
+            console.log('this')
+            if (err.response.status === 404) {
+              this.EOP = true
+              this.list = []
+            }
+          })
     },
     likeArticle: function () {
       axios({
@@ -196,55 +191,34 @@ export default {
           console.log(err.response)
         })
     },
-    createComment(event) {
-        event.preventDefault()
-        const SERVER_URL = process.env.VUE_APP_SERVER_URL
-        axios({
-          method: 'post',
-          url: `${SERVER_URL}/community/${this.id}/comments/`,
-          headers: this.$store.state.userStore.authorized_token,
-          data: {
-            'content': this.comment_content,
-            'user': this.$store.state.userStore.userId
-          }
-        })
-          .then(({data}) => {
-            this.list.push(data)
-            // this.$router.go()
-            this.comment_count += 1
-            this.comment_content = ''
-          })
-          .catch(err => {
-            const error = JSON.parse(err.response.request.response)
-            this.error = Object.values(error)[0][0]
-            console.log(this.error)
-          })
-      },
-    updateComment(event) {
-        event.preventDefault()
-        const SERVER_URL = process.env.VUE_APP_SERVER_URL
-        axios({
-          method: 'post',
-          url: `${SERVER_URL}/community/${this.id}/comments/`,
-          headers: this.$store.state.userStore.authorized_token,
-          data: {
-            'content': this.comment_content,
-            'user': this.$store.state.userStore.userId
-          }
-        })
-          .then(() => {
-            // 댓글을 작성하면 로드
-            this.$router.go()
-            this.comment_content = ''
-          })
-          .catch(err => {
-            const error = JSON.parse(err.response.request.response)
-            this.error = Object.values(error)[0][0]
-            console.log(this.error)
-          })
+    createComment() {
+      this.comment_count += 1
     },
-    deleteComment(id) {
-      this.list = this.list.filter(comment => comment.id !== id)
+    updateComment(event) {
+      event.preventDefault()
+      const SERVER_URL = process.env.VUE_APP_SERVER_URL
+      axios({
+        method: 'post',
+        url: `${SERVER_URL}/community/${this.id}/comments/`,
+        headers: this.$store.state.userStore.authorized_token,
+        data: {
+          'content': this.comment_content,
+          'user': this.$store.state.userStore.userId
+        }
+      })
+        .then(() => {
+          // 댓글을 작성하면 로드
+          this.$router.go()
+          this.comment_content = ''
+        })
+        .catch(err => {
+          const error = JSON.parse(err.response.request.response)
+          this.error = Object.values(error)[0][0]
+          console.log(this.error)
+        })
+    },
+    deleteComment() {
+      this.comment_count -= 1
     },
     goProfile: function() {
       this.$router.push({name: 'Profile', params: { username: this.username }})
@@ -255,6 +229,7 @@ export default {
   },
   created: function() {
     this.getArticle()
+    // this.getComments()
   },
   computed: {
     ...mapState(userStore, [

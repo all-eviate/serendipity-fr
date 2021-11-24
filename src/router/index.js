@@ -12,7 +12,9 @@ import UserReviewArticleList from '@/views/accounts/UserReviewArticleList'
 // 영화 관련 route
 import SearchResult from '@/views/movies/SearchResult'
 import MovieDetail from '@/views/movies/MovieDetail'
+import EnterTarot from '@/views/movies/EnterTarot'
 import TarotCard from '@/views/movies/TarotCard'
+
 // 커뮤니티 관련 route
 import ArticleList from '@/views/community/ArticleList'
 import ArticleDetail from '@/views/community/ArticleDetail'
@@ -172,6 +174,11 @@ const routes = [
     path: '/movies/detail/:movie_pk',
     name: 'MovieDetail',
     component: MovieDetail,
+  },
+  {
+    path: '/movies/enterTarot',
+    name: 'EnterTarot',
+    component: EnterTarot,
   },
   {
     path: '/movies/tarot',

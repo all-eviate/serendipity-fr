@@ -79,7 +79,7 @@ export default {
 
 <style>
   .title {
-     height:120px;
-     text-align: center;
+    height:120px;
+    text-align: center;
   }
 </style>

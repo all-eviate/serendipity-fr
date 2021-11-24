@@ -4,10 +4,10 @@
       v-for="movieReviewComment in movieReviewComments"
       :key="movieReviewComment.id"
       :movieReviewComment="movieReviewComment"
-      @delete-review-comment="getReviewComments"></movie-review-comment-list-item>
+      @delete-review-comment="deleteComment(movieReviewComment.id)"></movie-review-comment-list-item>
     <movie-review-comment-form
       :reviewPk="reviewPk"
-      @create-review-comment="getAllReviewComments"></movie-review-comment-form>
+      @create-review-comment="createComment"></movie-review-comment-form>
     <b-button class="text-decoration-none text-dark" :id="`review-${reviewPk}`" v-if="!EOP" variant="link" @click="getNextPage">더보기</b-button>
   </div>
 </template>
@@ -37,6 +37,14 @@ export default {
     }
   },
   methods: {
+    createComment: function() {
+      this.getAllReviewComments()
+      this.$emit('create-review-comment')
+    },
+    deleteComment: function(id) {
+      this.reviewComments = this.reviewComments.filter(comment => comment.id !== id)
+      this.$emit('delete-review-comment')
+    },
     getReviewComments: function() {
       const SERVER_URL = process.env.VUE_APP_SERVER_URL
       axios({
@@ -91,25 +99,6 @@ export default {
           })
       }
     }
-    // createReview: function() {
-    //   const SERVER_URL = process.env.VUE_APP_SERVER_URL
-    //   axios({
-    //     method: 'post',
-    //     url: `${SERVER_URL}/movies/${this.reviewPk}/review/`,
-    //     headers: this.$store.state.userStore.authorized_token,
-    //     data: {
-    //       'user': this.$store.state.userStore.userId,
-    //       'content': this.reviewContent,
-    //     }
-    //   })
-    //     .then(() => {
-    //       this.reviewContent = ""
-    //       this.getReviewComments()
-    //     })
-    //     .catch(err => {
-    //       console.log(err.response)
-    //     })
-    // }
   },
   created: function() {
     this.getReviewComments()

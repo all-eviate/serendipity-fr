@@ -2,7 +2,7 @@
   <div style="max-width:600px; margin: 0 0 0 100px;">
     <div class="d-flex justify-content-center">
       <b-form-textarea style="max-width:760px; width:100%;"
-        v-model="reviewContent"
+        v-model="reviewCommentContent"
         no-resize></b-form-textarea>
       <b-button style="width:60px;" @click="createReviewComment" variant="outline-dark"><b-icon-pencil-square></b-icon-pencil-square></b-button>
     </div>
@@ -41,6 +41,7 @@ export default {
           this.$emit("create-review-comment")
         })
         .catch(err => {
+          console.log(err.response)
           if (err.response === 404) {
             alert("설마 여기서 404 에러가 뜨려고?")
           }

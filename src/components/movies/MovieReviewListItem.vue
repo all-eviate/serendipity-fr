@@ -33,7 +33,7 @@
         <div class="d-flex justify-content-end">
           <b-button size="sm" class="text-decoration-none" style="width:50px; height:50px; border-radius:50%; color:#8C2016;" variant="link" @click="likeReview" v-if="likedReview"><b-icon-heart-fill></b-icon-heart-fill> {{likedUsersCount}}</b-button>
           <b-button size="sm" class="text-decoration-none text-dark" style="width:50px; height:50px; border-radius:50%;" variant="link" @click="likeReview" v-else><b-icon-heart></b-icon-heart> {{likedUsersCount}}</b-button>
-          <b-button size="sm" class="text-decoration-none text-dark" style="width:50px; height:50px; border-radius:50%;" v-if="toggled" v-b-toggle="`collapse-${movieReview.id}`" variant="link" @click="toggle"><b-icon-chat-left-text></b-icon-chat-left-text> {{movieReview.review_comment_set.length}}</b-button>
+          <b-button size="sm" class="text-decoration-none text-dark" style="width:50px; height:50px; border-radius:50%;" v-if="toggled" v-b-toggle="`collapse-${movieReview.id}`" variant="link" @click="toggle"><b-icon-chat-left-text></b-icon-chat-left-text> {{ comment_count }}</b-button>
           <b-button size="sm" class="text-decoration-none text-dark" style="width:50px; height:50px; border-radius:50%;" v-else v-b-toggle="`collapse-${movieReview.id}`" variant="link" @click="toggle"><b-icon-caret-up-fill></b-icon-caret-up-fill></b-button>
           <div v-if="this.userId === movieReview.user">
             <b-button size="sm" class="text-decoration-none" style="width:50px; height:50px; border-radius:50%; color:#F22D1B;" variant="link" @click="deleteReview" v-show="nowedit"><b-icon-trash></b-icon-trash></b-button>
@@ -49,7 +49,9 @@
           <div class="bg-color-snow">
             <p class="card-text">
               <movie-review-comment-list
-                :reviewPk="String(movieReview.id)"></movie-review-comment-list>
+                :reviewPk="String(movieReview.id)"
+                @create-review-comment="createReviewComment"
+                @delete-review-comment="deleteReviewComment"></movie-review-comment-list>
             </p>
           </div>
         </b-collapse>
@@ -86,6 +88,7 @@ export default {
       likedReview: false,
       toggled: true,
       profile_path: '',
+      comment_count: this.movieReview.review_comment_set.length,
     }
   },
   methods: {
@@ -117,6 +120,12 @@ export default {
             }
           })
       }
+    },
+    createReviewComment: function() {
+      this.comment_count += 1
+    },
+    deleteReviewComment: function() {
+      this.comment_count -= 1
     },
     deleteReview: function() {
       axios({

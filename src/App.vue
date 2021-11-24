@@ -14,7 +14,7 @@
           <div>
             <b-navbar-nav v-if="isLogin">
               <b-nav-item>
-                <router-link :to="{ name: 'TarotCard'}" class="color-snow text-decoration-none">타로</router-link>
+                <router-link :to="{ name: 'EnterTarot'}" class="color-snow text-decoration-none">타로</router-link>
               </b-nav-item>
               <b-nav-item>
                 <router-link :to="{ name: 'ArticleList' }" class="color-snow text-decoration-none">자유 게시판</router-link>
@@ -93,6 +93,9 @@ export default {
 
 
 <style>
+  ::-webkit-scrollbar {
+    display: none;
+  }
   @import './assets/styles/main.css';
   #app {
     font-family: GmarketSansMedium, Avenir, Helvetica, Arial, sans-serif;
