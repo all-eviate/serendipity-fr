@@ -1,7 +1,8 @@
 <template>
   <div>
     <!-- 배경 이미지 -->
-    <div class="background-image" :style="{ backgroundImage: 'url(' + main_path + ')' }">
+    <div class="background-image"
+      :style="{ 'background-image': 'url('+`${main_img_str}`+ ')' }">
       <div class="transparent-black"></div>
     </div>
     <!-- 로그인 박스 -->
@@ -49,6 +50,7 @@ export default {
         password: null,
       },
       error: null,
+      main_img_str: `${require('@/assets/main_img/'+String(_.random(2))+'.jpg')}`,
     }
   },
   methods: {
@@ -96,12 +98,6 @@ export default {
   },
   created: function () {
     this.main_img_num = _.random(2)
-  },
-  computed: {
-    main_path: function() {
-      const SERVER_URL = process.env.VUE_APP_SERVER_URL
-      return(`${SERVER_URL}/static/images/${this.main_img_num}.jpg`)
-    },
   },
 }
 </script>
