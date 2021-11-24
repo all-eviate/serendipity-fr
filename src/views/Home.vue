@@ -177,10 +177,10 @@ export default {
       })
   },
   computed: {
-    main_path: function() {
-      const SERVER_URL = process.env.VUE_APP_SERVER_URL
-      return(`${SERVER_URL}/static/images/p${this.main_img_num}.jpg`)
-    },
+    // main_path: function() {
+    //   const SERVER_URL = process.env.VUE_APP_SERVER_URL
+    //   return(`${SERVER_URL}/static/images/p${this.main_img_num}.jpg`)
+    // },
     ...mapState(userStore, [
       'isLogin',
     ]),
