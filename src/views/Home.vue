@@ -142,7 +142,8 @@ export default {
       })
       .catch(err => {
         console.log('에러!')
-        console.log(err)
+        console.log(SERVER_URL)
+        console.log(err.response)
       })
     axios({
       method: 'get',
