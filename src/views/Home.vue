@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div class="background-image" :style="{ backgroundImage: 'url(' + main_path + ')' }">
+    <img class="background-image" :src="require(`@/assets/main_img/${main_img_num}.jpg`)">
       <div style="width:100%; height:100%; background: linear-gradient(to bottom, transparent, 70%, #141414);"></div>
-    </div>
     <img alt="Vue logo" src="../assets/logo.png" style="margin-top:100px; max-width:500px; width: 90%">
     <the-search-bar
       :genreList="genreList"
