@@ -10,6 +10,8 @@
       <b-card class="main" 
         >
         <h1 class="color-snow">Welcome🎬</h1>
+        <div style="font-size: 12px;">사용자 이름은 알파벳, 숫자만 가능합니다.</div>
+        <div style="font-size: 12px;">비밀번호는 문자, 숫자, 특수문자를 합해 8자리 이상이어야 합니다.</div>
         <div class="input-container mx-auto">
           <b-alert v-if=error show variant="danger">{{ error }}</b-alert>
           <b-form-input
@@ -66,7 +68,9 @@ export default {
   },
   methods: {
     checkId: function(id, ps, psconfirm) {
-      if ( this.invalid_names.includes(id) ) {
+      const alphabets = /^[a-zA-Z0-9._]*$/
+      const onlynum = /^[0-9]+$/
+      if ( this.invalid_names.includes(id)  || !id.match(alphabets) || (id.match(onlynum) != null)) {
         this.error = '불가능한 사용자 이름입니다.'
         return
       }
