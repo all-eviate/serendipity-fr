@@ -146,6 +146,9 @@ export default {
         })
         .catch(err => {
           console.log(err.response)
+          if (err.response.status === 404) {
+            this.$router.push({name:'404'})
+          }
         })
         axios({
           method: 'get',

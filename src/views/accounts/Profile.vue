@@ -314,6 +314,9 @@ export default {
         })
         .catch(err => {
           console.log(err)
+          if (err.response.status === 404) {
+            this.$router.push({name:'404'})
+          }
         })
     },
     follow: function() {

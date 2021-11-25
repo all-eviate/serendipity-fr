@@ -109,8 +109,11 @@ export default {
           const genre_name_list = genre_picked_list.map(element => element.name)
           this.genres = `장르: ${genre_name_list.join(', ')}`
         })
-        .catch(err => {
-          console.log(err)
+        .catch(({response}) => {
+          console.log(response)
+          if (response.status === 404) {
+            this.$router.push({name: '404'})
+          }
         })
     },
     setGenreTable: function() {
