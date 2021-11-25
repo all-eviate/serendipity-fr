@@ -94,6 +94,8 @@ export default {
               return e
             })
             // console.log(curated_list)
+          } else if (res.data.message === 'nolikes') {
+            curated_list = []
           }
           const b4obj = curated_list.concat(default_list)
           const obj = b4obj.filter((movie, index, self) => 
