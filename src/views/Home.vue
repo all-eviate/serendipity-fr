@@ -127,8 +127,8 @@ export default {
           })
           this.personalList = obj.slice(0, 20)
         })
-        .catch(err => {
-          console.log(err)
+        .catch(({response}) => {
+          console.log(response)
         })
     }
   },
